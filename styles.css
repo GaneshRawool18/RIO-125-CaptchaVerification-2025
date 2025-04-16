@@ -1,0 +1,167 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    animation: fadeIn 1s ease-in-out;
+    background-image: url(bg.jpeg); /* Replace with your image path */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .container {
+    background: rgba(255, 255, 255, 0.6);
+    padding: 15px 20px;               /* Balanced and reduced padding */
+    width: 320px;                     /* Slightly narrower */
+    max-width: 100%;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    animation: slideIn 0.5s ease-in-out;
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateY(-50px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  label {
+    display: block;
+    text-align: left;
+    font-weight: bold;
+    margin: 10px 0 5px;
+    animation: fadeInLeft 0.5s ease-in-out;
+  }
+  
+  @keyframes fadeInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  input {
+    width: 100%;
+    padding: 12px; /* Same as button padding */
+    margin: 5px 0 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px; /* Same as button */
+    box-sizing: border-box;
+    animation: fadeInUp 0.5s ease-in-out;
+  }
+  
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .captcha-box {
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url(captcha.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 15px;
+    animation: zoomIn 0.5s ease-in-out;
+  }
+  
+  @keyframes zoomIn {
+    from {
+      transform: scale(0.9);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  .captcha-box button {
+    margin-left: 10px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #007bff;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  button {
+    background: #28a745;
+    color: white;
+    padding: 12px; /* Same padding as input */
+    border: none;
+    border-radius: 6px; /* Matches input */
+    cursor: pointer;
+    width: 100%;
+    margin-top: 15px;
+    animation: fadeInUp 0.5s ease-in-out;
+  }
+    button:focus {
+        outline: none;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }  
+  
+  button:hover {
+    background: #10e03d;
+  }
+  
+  p#result {
+    font-weight: bold;
+    color: red;
+    margin-top: 15px;
+    animation: shake 0.5s ease-in-out;
+  }
+  
+  @keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+  }
+  
+  p#success {
+    font-weight: bold;
+    color: green;
+    margin-top: 15px;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  

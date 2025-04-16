@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CAPTCHA Validation</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #4caf50;
+        --primary-hover: #45a049;
+        --error-color: #dc3545;
+        --success-color: #28a745;
+        --text-color: #333;
+        --border-radius: 8px;
+      }
+
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: url("bg.jpeg") no-repeat center center fixed;
+        background-size: cover;
+        color: var(--text-color);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .container {
+        background-color: rgba(245, 238, 238, 0.4);
+        padding: 15px 20px; /* Reduced vertical padding */
+        border-radius: var(--border-radius);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        width: 400px; /* Fixed width; adjust as needed */
+        max-width: 90%;
+      }
+
+      .container:hover {
+        transform: translateY(-2px);
+      }
+
+      h2 {
+        color: var(--text-color);
+        text-align: center;
+        margin-bottom: 15px; /* Reduced margin */
+        font-size: 26px;
+      }
+
+      label {
+        display: block;
+        margin-top: 10px; /* Slightly reduced margin */
+        font-weight: 600;
+        color: var(--text-color);
+        font-size: 14px;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 6px;
+        border: 2px solid #e1e1e1;
+        border-radius: var(--border-radius);
+        box-sizing: border-box;
+        transition: all 0.3s ease;
+        font-size: 15px;
+      }
+
+      input:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+      }
+
+      button {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        margin-top: 15px; /* Reduced margin-top */
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        width: 100%;
+        font-size: 15px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      button:hover {
+        background: var(--primary-hover);
+        transform: translateY(-1px);
+      }
+
+      button:active {
+        transform: translateY(1px);
+      }
+
+      .captcha-box {
+        background: url("captcha.png") no-repeat center center;
+        background-size: cover;
+        padding: 15px; /* Reduced padding */
+        margin: 15px 0; /* Reduced vertical margin */
+        text-align: center;
+        border-radius: var(--border-radius);
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        position: relative;
+      }
+
+      #captchaText span {
+        font-family: "Courier New", Courier, monospace;
+        display: inline-block;
+        margin: 0 6px;
+        font-weight: bold;
+        font-size: 28px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        animation: wobble 0.5s ease-in-out;
+      }
+
+      @keyframes wobble {
+        0% {
+          transform: translateX(0);
+        }
+        15% {
+          transform: translateX(-5px) rotate(-5deg);
+        }
+        30% {
+          transform: translateX(4px) rotate(3deg);
+        }
+        45% {
+          transform: translateX(-3px) rotate(-3deg);
+        }
+        60% {
+          transform: translateX(2px) rotate(2deg);
+        }
+        75% {
+          transform: translateX(-1px) rotate(-1deg);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+
+      #result {
+        margin-top: 15px;
+        text-align: center;
+        font-weight: 600;
+        padding: 8px;
+        border-radius: var(--border-radius);
+        transition: all 0.3s ease;
+      }
+
+      #result.success {
+        color: var(--success-color);
+        background-color: rgba(40, 167, 69, 0.1);
+      }
+
+      #result.error {
+        color: var(--error-color);
+        background-color: rgba(220, 53, 69, 0.1);
+      }
+
+      .popup-card {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 20px; /* Reduced padding */
+        border-radius: var(--border-radius);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        text-align: center;
+        animation: fadeIn 0.3s ease-in-out;
+      }
+
+      .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container animate__animated animate__fadeInDown">
+      <h2>CAPTCHA Validation</h2>
+
+      <!-- Username Field -->
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="Enter Username" required />
+
+      <!-- Email Field -->
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="Enter Email" required />
+
+      <!-- Password Field with Toggle Visibility Icon -->
+      <label for="password">Password</label>
+      <div style="position: relative">
+        <input
+          type="password"
+          id="password"
+          placeholder="Enter Password"
+          required
+        />
+        <span
+          id="togglePassword"
+          style="position: absolute; right: 10px; top: 10px; cursor: pointer"
+          >👁️</span
+        >
+      </div>
+
+      <!-- CAPTCHA Section -->
+      <div class="captcha-box">
+        <span id="captchaText"></span>
+      </div>
+      <label for="userCaptcha">Enter CAPTCHA</label>
+      <input
+        type="text"
+        id="userCaptcha"
+        placeholder="Enter CAPTCHA"
+        required
+      />
+      <button onclick="refreshCaptcha()">🔄 Refresh CAPTCHA</button>
+
+      <!-- Validation Button -->
+      <button onclick="validateCaptcha()">Validate CAPTCHA</button>
+
+      <p id="result"></p>
+    </div>
+
+    <div id="popupOverlay" class="popup-overlay" style="display: none">
+      <div id="popupCard" class="popup-card">
+        <p id="popupMessage"></p>
+        <button onclick="closePopup()">Close</button>
+      </div>
+    </div>
+
+    <script>
+      // Load CAPTCHA when page loads
+      document.addEventListener("DOMContentLoaded", function () {
+        refreshCaptcha();
+      });
+
+      // Store current CAPTCHA
+      let currentCaptcha = "";
+
+      // Function to fetch CAPTCHA from server
+      function refreshCaptcha() {
+        fetch("/Captcha/VerifyCaptchaServlet", {
+          headers: {
+            Accept: "text/plain",
+          },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok" + response.body);
+            }
+            return response.text();
+          })
+          .then((captcha) => {
+            currentCaptcha = captcha;
+            displayCaptcha(captcha);
+            document.getElementById("result").innerText = "";
+          })
+          .catch((error) => {
+            console.error("Error fetching CAPTCHA:", error);
+            document.getElementById("result").innerText =
+              "⚠️ Failed to load CAPTCHA. Please try again.";
+            document.getElementById("result").style.color = "red";
+          });
+      }
+
+      // Display CAPTCHA with styling
+      function displayCaptcha(captcha) {
+        let captchaTextElement = document.getElementById("captchaText");
+        captchaTextElement.innerHTML = "";
+
+        for (let char of captcha) {
+          let span = document.createElement("span");
+          span.textContent = char;
+          span.style.color = getRandomColor();
+          captchaTextElement.appendChild(span);
+        }
+      }
+
+      function getRandomColor() {
+        let colors = ["red", "blue", "green", "purple", "orange", "brown"];
+        return colors[Math.floor(Math.random() * colors.length)];
+      }
+
+      function setLoading(isLoading) {
+        const validateButton = document.querySelector(
+          'button[onclick="validateCaptcha()"]'
+        );
+        if (isLoading) {
+          validateButton.disabled = true;
+          validateButton.innerHTML =
+            '<span class="animate__animated animate__fadeIn">Validating...</span>';
+        } else {
+          validateButton.disabled = false;
+          validateButton.innerHTML = "Validate CAPTCHA";
+        }
+      }
+
+      function showPopup(message, isSuccess) {
+        const popupOverlay = document.getElementById("popupOverlay");
+        const popupCard = document.getElementById("popupCard");
+        const popupMessage = document.getElementById("popupMessage");
+
+        popupMessage.innerText = message;
+        popupCard.className = `popup-card ${isSuccess ? "success" : "error"}`;
+        popupOverlay.style.display = "block";
+      }
+
+      function closePopup() {
+        const popupOverlay = document.getElementById("popupOverlay");
+        popupOverlay.style.display = "none";
+        refreshCaptcha();
+      }
+
+      // Password visibility toggle functionality
+      document
+        .getElementById("togglePassword")
+        .addEventListener("click", function () {
+          const passwordField = document.getElementById("password");
+          const type = passwordField.type === "password" ? "text" : "password";
+          passwordField.type = type;
+        });
+
+      // Modify the validateCaptcha function to include password validation
+      function validateCaptcha() {
+        const username = document.getElementById("username").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const userCaptcha = document.getElementById("userCaptcha").value.trim();
+
+        // Password validation: check if it contains at least 7 characters and a number
+        const passwordValid = /^(?=.*\d).{7,}$/; // regex for at least 7 characters and 1 number
+
+        if (!username) {
+          showPopup("⚠️ Username is required.", false);
+          return;
+        }
+        if (!email) {
+          showPopup("⚠️ Email is required.", false);
+          return;
+        }
+        if (!password) {
+          showPopup("⚠️ Password is required.", false);
+          return;
+        }
+        if (!passwordValid.test(password)) {
+          showPopup(
+            "⚠️ Password must be at least 7 characters long and contain a number.",
+            false
+          );
+          return;
+        }
+        if (!userCaptcha) {
+          showPopup("⚠️ Please enter the CAPTCHA.", false);
+          return;
+        }
+
+        setLoading(true);
+
+        setTimeout(() => {
+          setLoading(false);
+
+          const normalizedUserCaptcha = userCaptcha.replace(/\s+/g, "");
+          const normalizedCurrentCaptcha = currentCaptcha.replace(/\s+/g, "");
+
+          if (normalizedUserCaptcha === normalizedCurrentCaptcha) {
+            showPopup(
+              "✅ CAPTCHA matched! User registered successfully!",
+              true
+            );
+            document.getElementById("username").value = "";
+            document.getElementById("email").value = "";
+            document.getElementById("password").value = "";
+            document.getElementById("userCaptcha").value = "";
+          } else {
+            showPopup("❌ Incorrect CAPTCHA. Please try again!", false);
+            document.getElementById("userCaptcha").value = "";
+            document.getElementById("userCaptcha").focus();
+          }
+        }, 500);
+      }
+    </script>
+  </body>
+</html>
+<!-- main -->
